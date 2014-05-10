@@ -348,14 +348,26 @@ body {
 	        box-sizing: border-box;
 }
 
+.reveal table {
+  margin: auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
 .reveal table th,
+.reveal table tr{
+}
 .reveal table td {
+	border-bottom:1px solid; 
+
 	text-align: left;
 	padding-right: .3em;
 }
 
 .reveal table th {
 	font-weight: bold;
+}
+.reveal table tr:last-child td {
+    border-bottom: none;
 }
 
 .reveal sup {
