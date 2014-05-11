@@ -44,12 +44,97 @@
 			<div class="slides">
         <section>
           <h1>Lambda Chess</h1>
+          <h3>A platform for competing algorithms</h3>
+
+          <img width="320" height="299" BORDER="0" src="img/lambda2.png" alt="lambda">
+          <img width="320" height="299" BORDER="0" src="img/chess2.png" alt="chess">
+          </p>
+          Author:
+          Mathieu Gauthron
         </section>
 
         <section data-markdown>
-Before we start:
+Application Stack
+-----------------
 
-[http://clojuredocs.org/](http://clojuredocs.org/)
+* Browser
+ * ClojureScript
+ * Clidget
+* Common
+ * Async
+ * Chord/Websocket
+* Web Server
+ * Friends
+ * Compojure/Ring/Hiccup
+ * clj-chess-engine
+  * State Monad
+  * Unfold
+ * MondgoDB
+
+        </section>
+
+        <section>
+
+          <img BORDER="0" src="img/submit.png" alt="submit stack">
+        
+        </section>
+        <section>
+
+          <img BORDER="0" src="img/replay.png" alt="replay stack">
+          
+        </section>
+
+        <section>
+
+          <h3>The Chess Engine Implementation</h3>
+ 
+        </section>
+
+        <section data-markdown>
+Chess Engine building blocks
+---------------
+
+```clojure
+(defn unfold [g seed]
+  (->> (g seed)
+       (iterate (comp g second))
+       (take-while identity)
+       (map first)))
+```
+
+
+```clojure
+(fn [state]
+  [value new-state])
+```
+
+        </section>
+
+        <section id="fragments">
+
+          <h3>First ...</h3>
+ <p class="fragment"> A Quiz</p>
+            <ol>
+              <li class="fragment"><code>Who Think Atoms are the best way to manage state in Clojure?</code></li>
+              <li class="fragment"><em>Are Monad for academics and not useful in Clojure?</em></li>
+            </ol>
+        </section>
+
+        <section data-markdown>
+
+Is this a good example of use of an Atom?
+-----------------------------------------
+
+```clojure
+(defn draw
+  []
+  (let [blob-size (* 2 (params :blob-radius))
+    [bx by] @blob-location]
+  (background-float (params :background-colour))
+  (fill (params :blob-colour))
+  (rect bx by blob-size blob-size)
+  (text "Use WASD and arrow keys to move" 10 390)))
+  ```
         </section>
 
         <section>
@@ -84,285 +169,7 @@ Before we start:
             Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
           </aside>
         </section>
-        <section data-markdown>
-Datatypes
----------
 
-```clj
-; strings
-"Hello sailor!"
-; numbers
-31337
-; symbols
-this-is-a-symbol
-; keywords
-:this-is-a-keyword
-```
-        </section>
-        <section data-markdown>
-Lists
------
-```clj
-(println "Hello World!")
-(1 2 3 "Hello" :world)
-(1 2 3 ("lists within lists"))
-```
-        </section>
-        <section data-markdown>
-Vectors
--------
-```clj
-["This" :is "a vector" 1 2 3]
-```
-        </section>
-        <section data-markdown>
-Functions
----------
-```clj
-(defn hello-world []
-  (println "Hello World!"))
-
-(defn add-two [a b]
-  (+ a b))
-```
-        </section>
-        <section data-markdown>
-Conditions
-----------
-```clj
-(defn number-as-text [number]
-  (cond (= number 1) "One"
-        (= number 2) "Two"
-        :else        "Many"))
-```
-        </section>
-        <section data-markdown>
-Fizzbuzz
---------
-
-```clj
-(1 2 "fizz" 4 "buzz" "fizz" 7 ... 14 "fizzbuzz" 16 ...)
-```
-        </section>
-<section data-markdown>
-Remember
---------
-```clj
-(defn number-as-text [number]
-  (cond (= number 1) "One"
-        (= number 2) "Two"
-        :else        "Many"))
-```
-
-Hint: (rem 7 3)
-        </section>
-        <section data-markdown>
-Unit tests
-----------
-```clj
-(with-test
-  (defn fizz-buzz [x]
-    (cond (= (rem x 15) 0) "FizzBuzz"
-          (= (rem x 5) 0)  "Buzz"
-          (= (rem x 3) 0)  "Fizz"
-          :else            x))
-  (is (= 1 (fizz-buzz 1)))
-  (is (= "Fizz" (fizz-buzz 3)))
-  (is (= "Buzz" (fizz-buzz 5))))
-```
-        </section>
-
-        <section data-markdown>
-Anonymous functions
--------------------
-```clj
-(fn [number] (+ number 2))
-
-((fn [number] (+ number 2)) 5)
-
-(def add-two (fn [number] (+ number 2)))
-```
-        </section>
-
-        <section data-markdown>
-Map
----
-```clj
-(map inc [1 2 3 4])
-; => [2 3 4 5]
-
-(map (fn [item] (+ item 2)) [1 2 3 4])
-; => [3 4 5 6]
-```
-        </section>
-        <section data-markdown>
-Map + Closures
---------------
-```clj
-(defn add-x [numbers x]
-  (map
-    (fn [number] (+ number x))
-    numbers))
-
-(add-x [1 2 3 4] 5)
-; => [6 7 8 9]
-```
-        </section>
-        <section data-markdown>
-Filter
-------
-```clj
-(filter pos? [-1 0 1 2])
-; => [1 2]
-```
-        </section>
-        <section data-markdown>
-Filter + Closures
------------------
-```clj
-(defn greater-than [numbers x]
-  (filter
-    (fn [number] (> number x))
-    numbers))
-
-(greater-than [1 2 3 4] 2)
-; => [3 4]
-```
-        </section>
-        <section data-markdown>
-Reduce
-------
-```clj
-(reduce + [1 2 3 4])
-; => 10
-
-(reduce * [1 2 3 4])
-; => 24
-```
-        </section>
-        <section data-markdown>
-Yahtzee scores
---------------
-```clj
-(ones [1 1 4 5 6])
-; => 2
-(twos [2 2 4 6 2])
-; => 6
-(chance [2 2 4 5 4])
-; => 17
-```
-        </section>
-
-        <section data-markdown>
-Remember
---------
-```clj
-(defn greater-than [numbers x]
-  (filter (fn [number] (> number x)) numbers))
-
-(greater-than [1 2 3 4] 2)
-; => (3 4)
-```
-Hint: Use reduce to add numbers
-        </section>
-        <section data-markdown>
-Maps
-----
-```clj
-; a basic key/value store
-{:name "Mario",
- :occupation "Plumber"}
-
-{:name "Luigi",
- :occupation "Plumber"}
-```
-        </section>
-        <section data-markdown>
-Maps
-----
-```clj
-(def mario-map {:name "Mario",
-                :occupation "Plumber"})
-
-(mario-map :name)
-; => "Mario"
-
-(assoc mario-map :name "Wario")
-; => {:name "Wario", :occupation "Plumber"}
-```
-        </section>
-        <section data-markdown>
-Frequencies
------------
-```clj
-(frequencies ["Mario" "Mario" "Luigi" "Mario"])
-; => {"Mario" 3, "Luigi" 1}
-
-(frequencies [5 4 3 4 6])
-; => {3 1, 4 2, 5 1, 6 1}
-```
-        </section>
-        <section data-markdown>
-And One More Thing
-------------------
-```clj
-(def names ["Mario" "Luigi" "Bowser"])
-
-; look up an index on a vector
-(names 1)
-; => "Luigi"
-
-; length of a vector
-(count names)
-; => 3
-```
-        </section>
-		<section data-markdown>
-Remember
---------
-```clj
-(defn greater-than [numbers x]
-  (filter (fn [number] (> number x)) numbers))
-
-(frequencies ["Mario" "Mario" "Luigi" "Mario"])
-; => {"Mario" 3, "Luigi" 1}
-```			
-	    </section>
-        <section data-markdown>
-Minesweeper
------------
-```clj
-(def board [[:b nil nil] [nil nil nil] [nil nil :b]])
-
-(with-test
-    (defn mines
-      ...
-
-  (is (= 2 (mines board [1 1])
-  (is (= 0 (mines board [0 2])))
-  (is (= 1 (mines board [1 2]))))
-```
-        </section>
-                <section data-markdown>
-Strategy
---------
-```clj
-(def board [[:b nil nil] [nil nil nil] [nil nil :b]])
-
-(with-test (defn mine? [board pos] ...)
-  (is (= true (mine? board [2 2])))
-  (is (= false (mine? board [1 1])))
-  (is (= false (mine? board [-1 0]))))
-
-(with-test (defn neighbours [pos] ...)
-  (is (= [[0 -1] [0 0] [0 1] [1 -1] [1 1] [2 -1] [2 0] [2 1]]
-         (neighbours [0 1]))))
-```
-        </section>
-
-        <section>
-          <h3>kthxbye</h3>
-        </section>
 
 			</div>
 
