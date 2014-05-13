@@ -51,6 +51,142 @@
           </p>
           Author:
           Mathieu Gauthron
+          <aside class="notes">
+            Today I'm going to present a webplatform that I have been working on for the past 5 months.
+
+          </aside>
+        </section>
+
+        <section data-markdown>
+
+What is it for?
+-----------------
+
+![d](img/board.png)
+
+Note:
+Its aim is to promote games like this.            
+
+        </section>
+
+        <section>
+        
+          <h3>And...</h3>
+
+          <img width="320" height="299" BORDER="0" src="img/330px-Go-board-animated.gif" alt="board">
+          <aside class="notes">
+            or this one.            
+          </aside>
+
+        </section>
+
+        <section>
+        
+          <h3>and...</h3>
+
+          <img width="320" height="299" BORDER="0" src="img/connect-four.jpg" alt="connect-four.jpg">
+          <aside class="notes">
+            or this one.            
+          </aside>
+
+        </section>
+
+        <section>
+        
+          <h3>And many more...</h3>
+          <h3>But what do they have in common?</h3>
+            <aside class="notes">
+            3 sec pause... They all are turn based adversarial games.
+          </aside>
+        </section>
+
+        <section>
+        
+          <h3>What might an API look like?</h3>
+            <aside class="notes">
+            
+          </aside>
+        </section>
+
+        <section>
+
+        <section data-markdown>
+         <script type="text/template">
+The function Definition
+-----------------------
+        
+```clojure
+(fn [{:keys [board valid-moves am-i-white? in-check? history]}]  ...)
+
+=> {:move [:e2 :e4]})
+```
+
+Note:
+The board, valid-moves...
+         </script>
+        </section>
+
+        <section data-markdown>
+         <script type="text/template">
+A board
+-----------------------
+        
+```clojure
+[\r \n \b \q \k \b \n \r
+ \p \p \p \p \p \p \p \p
+ \- \- \- \- \- \- \- \-
+ \- \- \- \- \- \- \- \-
+ \- \- \- \- \- \- \- \-
+ \- \- \- \- \- \- \- \-
+ \P \P \P \P \P \P \P \P
+ \R \N \B \Q \K \B \N \R]
+```
+
+Note:
+The board, valid-moves...
+         </script>
+        </section>
+
+        </section>
+
+
+        <section data-markdown>
+Avoiding recomputation
+-----------------------
+        
+```clojure
+(fn [{:keys [board valid-moves am-i-white? in-check? history state]}]  ...)
+
+=> {:move [:e2 :e4] :state 42})
+```
+Note:
+It state ready
+        </section>
+
+
+        <section data-markdown>
+Possible implementation
+-----------------------
+        
+```clojure
+(fn [{:keys [board valid-moves am-i-white? in-check? history state]}]
+                      (let [v (into [] valid-moves)]
+                        (let [move (rand-int (count valid-moves))]
+                          {:move (get v move), :state nil})))
+```
+Note:
+Here is a suggested implementation...
+The idea is I'm not writing the chess engine myself. Other people submit 
+the chess strategy implementation.
+
+        </section>
+
+        <section>
+        
+          <h3>How is the website designed?</h3>
+            <aside class="notes">
+            
+          </aside>
         </section>
 
         <section data-markdown>
@@ -107,35 +243,51 @@ Chess Engine building blocks
 (fn [state]
   [value new-state])
 ```
+Note:
+To take a leaf from Haskell: who knows what unfold is?
+Who knows what fold is?
+Who reduce is?
+
+
+What is this function?
+It has a relationship with state monad but I dont have time to go through it.
+
+The take is that I have found these two constructs very elegant to implement a purely function parser
 
         </section>
 
-        <section id="fragments">
-
-          <h3>First ...</h3>
- <p class="fragment"> A Quiz</p>
-            <ol>
-              <li class="fragment"><code>Who Think Atoms are the best way to manage state in Clojure?</code></li>
-              <li class="fragment"><em>Are Monad for academics and not useful in Clojure?</em></li>
-            </ol>
-        </section>
 
         <section data-markdown>
+          <script type="text/template">
+Step Monad
+-----------------------
+        
+```clojure
+(defn game-step-monad-wrap [game-step]
+  (domonad state-m
+           [res (fetch-val :result)
+            a game-step
+            s (fetch-state)
+            :when (nil? res)]
+           [a s]
 
-Is this a good example of use of an Atom?
------------------------------------------
+           ))
+```
 
 ```clojure
-(defn draw
-  []
-  (let [blob-size (* 2 (params :blob-radius))
-    [bx by] @blob-location]
-  (background-float (params :background-colour))
-  (fill (params :blob-colour))
-  (rect bx by blob-size blob-size)
-  (text "Use WASD and arrow keys to move" 10 390)))
-  ```
+(defn game-seq [monadic-step init-state]
+  (unfold
+   monadic-step
+   init-state
+   ))
+
+```
+
+Note:
+The board, valid-moves...
+         </script>
         </section>
+
 
         <section>
           <h2>Superb Tables</h2>
@@ -168,7 +320,45 @@ Is this a good example of use of an Atom?
             <aside class="notes">
             Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
           </aside>
+
+
+```clojure
+(fn [{:keys [board valid-moves am-i-white? in-check? history state]}]
+                      (let [v (into [] valid-moves)]
+                        (let [move (rand-int (count valid-moves))]
+                          {:move (get v move), :state nil})))
+```
+
         </section>
+        <section data-markdown>
+
+Is this a good example of use of an Atom?
+-----------------------------------------
+
+```clojure
+(def state-of-world  (atom 0))
+
+(defn process-step []
+  (swap! state-of-world inc))
+
+(for [i (range 10)]
+  (do (process-step)
+      @state-of-world))
+;;=> (1 2 3 4 5 6 7 8 9 10)
+```
+        </section>
+
+
+        <section id="fragments">
+
+          <h3>But first ...</h3>
+ <p class="fragment"> A Quiz</p>
+            <ol>
+              <li class="fragment"><em>Who Think Atoms are the best way to manage state in Clojure?</em></li>
+              <li class="fragment"><em>Are Monad for academics and not useful in Clojure?</em></li>
+            </ol>
+        </section>
+
 
 
 			</div>
