@@ -43,16 +43,17 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
         <section>
-          <h1>Lambda Chess</h1>
+          <h1>lambda.zone</h1>
           <h3>A platform for competing algorithms</h3>
 
-          <img width="320" height="299" BORDER="0" src="img/lambda2.png" alt="lambda">
-          <img width="320" height="299" BORDER="0" src="img/chess2.png" alt="chess">
+          <img  BORDER="0" src="img/LOWEMZONE.png" alt="lambda">
+          <!--<img width="320" height="299" BORDER="0" src="img/lambda2.png" alt="chess">
+          <img width="320" height="299" BORDER="0" src="img/chess2.png" alt="chess">  -->
           </p>
           Author:
           Mathieu Gauthron
           <aside class="notes">
-            Today I'm going to present a webplatform that I have been working on for the past 5 months.
+            Today I'm going to present a webplatform that I have been working on for the past 5 months. It's called lambda.zone.
 
           </aside>
         </section>
@@ -65,7 +66,7 @@ What is it for?
 ![d](img/board.png)
 
 Note:
-Its aim is to promote games like this.            
+Its aim is to promote games like this one. Which I have called lambda chess.            
 
         </section>
 
@@ -73,9 +74,9 @@ Its aim is to promote games like this.
         
           <h3>And...</h3>
 
-          <img width="320" height="299" BORDER="0" src="img/330px-Go-board-animated.gif" alt="board">
+          <img width="320" height="299" BORDER="0" src="img/330px-Go-board-animated.gif" alt="go">
           <aside class="notes">
-            or this one.            
+            or this one. which will be called lambda go.            
           </aside>
 
         </section>
@@ -86,7 +87,7 @@ Its aim is to promote games like this.
 
           <img width="320" height="299" BORDER="0" src="img/connect-four.jpg" alt="connect-four.jpg">
           <aside class="notes">
-            or this one.            
+            or this one lambda connect-foor.          
           </aside>
 
         </section>
@@ -96,7 +97,11 @@ Its aim is to promote games like this.
           <h3>And many more...</h3>
           <h3>But what do they have in common?</h3>
             <aside class="notes">
-            3 sec pause... They all are turn based adversarial games.
+            and so on.
+            3 sec pause... 
+
+            You might have noticed that they all are turn based adversarial games.
+            This model is ideal to delegate the execution of an oponent throught the implementation of a strategy function.
           </aside>
         </section>
 
@@ -122,7 +127,12 @@ The function Definition
 ```
 
 Note:
-The board, valid-moves...
+The board (move down) contains a vector of characters.
+valid-moves contains a collection of moves.
+Color is a boolean.
+History contains a collection of moves.
+A flag even tells you when you re in check.
+
          </script>
         </section>
 
@@ -143,9 +153,26 @@ A board
 ```
 
 Note:
+a vector of characters
+         </script>
+        </section>
+
+        <section data-markdown>
+         <script type="text/template">
+Move Coordinates
+-----------------------
+        
+![d](img/board.png)
+
+```clj
+["e2" "e4"]  ; ["source" "destination"]
+```
+
+Note:
 The board, valid-moves...
          </script>
         </section>
+
 
         </section>
 
@@ -160,7 +187,7 @@ Avoiding recomputation
 => {:move [:e2 :e4] :state 42})
 ```
 Note:
-It state ready
+The game engine can also hold a state for you to store your expensive calculations
         </section>
 
 
@@ -185,7 +212,7 @@ the chess strategy implementation.
         
           <h3>How is the website designed?</h3>
             <aside class="notes">
-            
+            How is this all designed?
           </aside>
         </section>
 
@@ -202,28 +229,47 @@ Application Stack
 * Web Server
  * Friends
  * Compojure/Ring/Hiccup
+ * Clojail
  * clj-chess-engine
-  * State Monad
-  * Unfold
+    * State Monad
+    * Unfold
  * MondgoDB
+
+Note:
+The website components are using the following libraries.
 
         </section>
 
         <section>
 
           <img BORDER="0" src="img/submit.png" alt="submit stack">
-        
+            <aside class="notes">
+            This gives you anoverview of the application. It's made of 3 components: WebServer running the Chess-Engine, browser running ClojureScript and the Database.
+            There are various client server communication mechanisms like REST calls in red and WebSockets in green.
+            On the top of the main web page is the authentication done via the Friends library using openId. You don't need to create yet another account. You can use any of these providers to authenticate.
+            Then the page contains two fields, to give a unique name to your strategy and another to paste your function implementation.
+            For the moment it must be an anonymous function as described earlier. Any sub-function must be inlined in a let block. The code is submitted via a rest call. It will be executed against all the other functions to generate some stats (displayed at the bottom of the page).
+            The execution is made on the server and is sandboxed with Clojail. No thread creation, no def, no Java interops are allowed. Execution time of a user function is bounded so users cannot take the server down with an infinite loop.
+            Real time updates of the games execution and of the stats are send back asynchronously to the browser, providing an entertaining  animation every time a function is submitted.
+            The stats section, lists the ranking of the functions and list all the match's results.
+            Clicking on a match result will take you to this replay page...
+          </aside>        
         </section>
         <section>
 
           <img BORDER="0" src="img/replay.png" alt="replay stack">
-          
+          <aside class="notes">
+            2 rest calls retreive the list of moves of the game and the state of the board at each step of the game.
+          </aside>
         </section>
 
         <section>
 
           <h3>The Chess Engine Implementation</h3>
- 
+           <aside class="notes">
+            Enough of the WebApplication. Let's dive into the Chess-engine implementation.
+          </aside>
+
         </section>
 
         <section data-markdown>
@@ -240,40 +286,32 @@ Chess Engine building blocks
 
 
 ```clojure
-(fn [state]
-  [value new-state])
+(fn g [seed]
+  [value new-seed])
 ```
 Note:
 To take a leaf from Haskell: who knows what unfold is?
 Who knows what fold is?
-Who reduce is?
+What about reduce is?
 
+Reduce uses a function to agregate a collection into single value. (It happens to be called a Catamorphism.)
+Unfold does the oposite, it uses a function to expend a seed into a collection (a.k.a Anamorphism). A little bit like the iterate function except  that the unfold keep the sequence of seeds and the sequence of values separated.
+To understand, the function "g" used by unfold takes a seed and retuns a value and a new seed. The values end up forming the collection which is returned by unfold.
 
-What is this function?
-It has a relationship with state monad but I dont have time to go through it.
+The "g" function happens to be a Monadic value of a State Monad. This is very convenient because State Monad can easily compose and manage state very elegantly. I a way I can unfold my monadic value to be expended into a sequence of States.
 
-The take is that I have found these two constructs very elegant to implement a purely function parser
+Side comment: Monads return monadic values. For example a sequence monad in Clojure is just and array. 
+
+The take away here is that I have found the use of the unfold function and State Monads to offer an elegant way to implement a purely functional state machine. It can also be viewed as a parser which starts with the initial board state and comsumes moves step by step to deliver an end game result. No atoms are used to achieve this.
 
         </section>
 
 
         <section data-markdown>
           <script type="text/template">
-Step Monad
------------------------
+An Engine which Unfolds
+------------------------
         
-```clojure
-(defn game-step-monad-wrap [game-step]
-  (domonad state-m
-           [res (fetch-val :result)
-            a game-step
-            s (fetch-state)
-            :when (nil? res)]
-           [a s]
-
-           ))
-```
-
 ```clojure
 (defn game-seq [monadic-step init-state]
   (unfold
@@ -283,9 +321,41 @@ Step Monad
 
 ```
 
+
+```clojure
+(defn play-game-step [{:keys [board f1 f2 id1 id2 white-turn? move-history state-f1 state-f2 iteration channel game-id] :as game-context}]
+   ...
+   (check-mate? board white-turn? move-history)
+   ....
+   ))
+```
+
+```clojure
+(defn game-step-monad-wrap [game-step]
+  (domonad state-m
+           [res (fetch-val :result)
+            a game-step
+            s (fetch-state)
+            :when (nil? res)]
+           [a s] ))
+```
+
+
 Note:
-The board, valid-moves...
+Lets look briefly at some of code extracts from the Chess-Engine. 
+Essentialy, a game is a sequence of game states and a result as a final element. "game-seq" returns the corresponding lazy-sequence by calling unfold. Each step of the game are computed by the "g" function of the unfold which is the this (play-game-step) function (the monadic value in itself). This function is much longer and too ugly to display. it's the heard of the engine. Because it's monadic it can be composed and wrapped by this function (game-step-monad-wrap) to analyse the state and terminate the sequence under the appropriate condition. By the way this (domonad block) is a Monadic Comprehension. This is what is passed to the "game-seq" function.
+
+It's all good what is the avantage of using all these clever monads instead of a good old loop?
+
+Here my Chess-engine is very flexible. I can pass a slightly modified monadis-step to my game-seq to implement a replay rather than a play engine. All the sequencing logic remains the same. Only the step function changes. Also if I want to implement a different game like go or connect-foor, only the step function will have to be re-implemented.
+
+
          </script>
+        </section>
+
+
+        <section>
+                  <img  border="0" src="img/question.png" alt="questions?">
         </section>
 
 
