@@ -46,14 +46,16 @@
           <h1>lambda.zone</h1>
           <h3>A platform for competing algorithms</h3>
 
-          <img  BORDER="0" src="img/LOWEMZONE.png" alt="lambda">
-          <!--<img width="320" height="299" BORDER="0" src="img/lambda2.png" alt="chess">
-          <img width="320" height="299" BORDER="0" src="img/chess2.png" alt="chess">  -->
+          <!--<img  BORDER="0" src="img/LOWEMZONE.png" alt="lambda">-->
+          <img width="320" height="299" BORDER="0" src="img/lambda2.png" alt="chess">
+          <!--<img width="320" height="299" BORDER="0" src="img/chess2.png" alt="chess">-->
           </p>
           Author:
           Mathieu Gauthron
           <aside class="notes">
-            Today I'm going to present a webplatform that I have been working on for the past 5 months. It's called lambda.zone.
+            Today I'm going to present a webplatform written entirely in Clojure that I have been working on for the past 5 months. I have called it lambda.zone.
+
+            (total time 20s)
 
           </aside>
         </section>
@@ -68,6 +70,7 @@ What is it for?
 Note:
 Its aim is to promote games like this one. Which I have called lambda chess.            
 
+(time 10s : total time 30s)
         </section>
 
         <section>
@@ -76,7 +79,8 @@ Its aim is to promote games like this one. Which I have called lambda chess.
 
           <img width="320" height="299" BORDER="0" src="img/330px-Go-board-animated.gif" alt="go">
           <aside class="notes">
-            or this one. which will be called lambda go.            
+            or this one. Lambda go.            
+            (time 10s : total time 40s)
           </aside>
 
         </section>
@@ -87,8 +91,9 @@ Its aim is to promote games like this one. Which I have called lambda chess.
 
           <img width="320" height="299" BORDER="0" src="img/connect-four.jpg" alt="connect-four.jpg">
           <aside class="notes">
-            or this one lambda connect-foor.          
-          </aside>
+            or lambda connect-four.          
+            (time 10s : total time 50s)
+           </aside>
 
         </section>
 
@@ -98,10 +103,11 @@ Its aim is to promote games like this one. Which I have called lambda chess.
           <h3>But what do they have in common?</h3>
             <aside class="notes">
             and so on.
-            3 sec pause... 
-
-            You might have noticed that they all are turn based adversarial games.
-            This model is ideal to delegate the execution of an oponent throught the implementation of a strategy function.
+            (3 sec pause)... 
+            Has anyone notice what they have in common?
+            Yes! I would say they all are turn based adversarial games.
+            This model is ideal to delegate the decision of an oponent throught the implementation of a strategy function.
+            (time 40s : total time 1 min 30)
           </aside>
         </section>
 
@@ -109,7 +115,11 @@ Its aim is to promote games like this one. Which I have called lambda chess.
         
           <h3>What might an API look like?</h3>
             <aside class="notes">
-            
+            I have only implemented the Chess Game at the moment so it might be a bit specific.
+            But can you think of what would this strategy function look like?
+
+            (time 30s : total time 2 mins)
+ 
           </aside>
         </section>
 
@@ -117,7 +127,7 @@ Its aim is to promote games like this one. Which I have called lambda chess.
 
         <section data-markdown>
          <script type="text/template">
-The function Definition
+Strategy function Definition
 -----------------------
         
 ```clojure
@@ -127,11 +137,14 @@ The function Definition
 ```
 
 Note:
-The board (move down) contains a vector of characters.
-valid-moves contains a collection of moves.
-Color is a boolean.
-History contains a collection of moves.
-A flag even tells you when you re in check.
+Put yourselves in the place of a player. What would you need to make a decision. (pause)
+The state of the board (move down) containing a vector of characters.
+a list of valid-moves.
+The color of your team.
+The History of all moves.
+even flag to tell you when you re in-check.
+
+            (1 min : total time 3 mins )
 
          </script>
         </section>
@@ -187,7 +200,10 @@ Avoiding recomputation
 => {:move [:e2 :e4] :state 42})
 ```
 Note:
-The game engine can also hold a state for you to store your expensive calculations
+The game engine can also hold a state for you to store arbitrary data structures. For example to store your expensive calculations
+
+(30s : total time 3 min 30)
+
         </section>
 
 
@@ -203,8 +219,11 @@ Possible implementation
 ```
 Note:
 Here is a suggested implementation...
-The idea is I'm not writing the chess engine myself. Other people submit 
-the chess strategy implementation.
+It's my helloworld example, it returns a valid move. But that's just a very simple example.
+The idea is I'm not writing the whole of the chess engine myself. Other people submit 
+their chess strategy implementation. My engine only ensures valid execution of the game.
+
+(40s : total time 4 min 10)
 
         </section>
 
@@ -212,7 +231,10 @@ the chess strategy implementation.
         
           <h3>How is the website designed?</h3>
             <aside class="notes">
-            How is this all designed?
+            Let's now look at the design.
+
+(10s : total time 4 min 20)
+
           </aside>
         </section>
 
@@ -238,28 +260,38 @@ Application Stack
 Note:
 The website components are using the following libraries.
 
+(describ browser common and server)
+As you can see the chess-engine is an independent library. which is convenient if you either want to add another game or if you want to independently reuse the chess-engine to create another chess game. Chess-engine is just a pure chess api.
+
+(1 min : total time 5 min 20)
+
         </section>
 
         <section>
 
           <img BORDER="0" src="img/submit.png" alt="submit stack">
             <aside class="notes">
-            This gives you anoverview of the application. It's made of 3 components: WebServer running the Chess-Engine, browser running ClojureScript and the Database.
-            There are various client server communication mechanisms like REST calls in red and WebSockets in green.
-            On the top of the main web page is the authentication done via the Friends library using openId. You don't need to create yet another account. You can use any of these providers to authenticate.
-            Then the page contains two fields, to give a unique name to your strategy and another to paste your function implementation.
-            For the moment it must be an anonymous function as described earlier. Any sub-function must be inlined in a let block. The code is submitted via a rest call. It will be executed against all the other functions to generate some stats (displayed at the bottom of the page).
-            The execution is made on the server and is sandboxed with Clojail. No thread creation, no def, no Java interops are allowed. Execution time of a user function is bounded so users cannot take the server down with an infinite loop.
+            This gives you an overview of the application. It's made of 3 components: WebServer running the Chess-Engine, browser running ClojureScript and the Database.
+            There are various client server communication mechanisms like REST calls in red and WebSockets in green across the same page.
+            On the top of the main web page is the authentication provided by the Friends library using openId. This means, you don't need to create yet another account. You can use any of these providers to authenticate.
+            Then the page contains two fields, one to give a unique name to your strategy and another to paste your function implementation.
+            For the moment it must be an anonymous function as described earlier. Any sub-function must be inlined in a let block. The code is submitted via a rest call. It will be executed against all the other functions, already present on the server, to generate some stats (displayed at the bottom of the page).
+            The execution is made on the server and is sandboxed with Clojail. This means, no thread creation, no def, no Java interops are allowed. Execution time of a user function is bounded so users cannot take the server down with an infinite loop.
             Real time updates of the games execution and of the stats are send back asynchronously to the browser, providing an entertaining  animation every time a function is submitted.
             The stats section, lists the ranking of the functions and list all the match's results.
             Clicking on a match result will take you to this replay page...
+
+            (5 mins : total time 10 mins)
+
           </aside>        
         </section>
         <section>
 
           <img BORDER="0" src="img/replay.png" alt="replay stack">
           <aside class="notes">
-            2 rest calls retreive the list of moves of the game and the state of the board at each step of the game.
+            one rest call is used to retreive the list of moves of the game at the bottom of the page.  another rest call fetches the state of the board every time the prev or next button are pressed. the board is refreshed with Clidget which abstract the notion of graphic component in ClojureScript. It's true Ajax, there are no refresh of the page.
+
+            (1 mins : total time 11 min)
           </aside>
         </section>
 
@@ -268,6 +300,9 @@ The website components are using the following libraries.
           <h3>The Chess Engine Implementation</h3>
            <aside class="notes">
             Enough of the WebApplication. Let's dive into the Chess-engine implementation.
+
+            (15s : total time 11 min 15)
+
           </aside>
 
         </section>
@@ -292,22 +327,28 @@ Chess Engine building blocks
 Note:
 To take a leaf from Haskell: who knows what unfold is?
 Who knows what fold is?
-What about reduce is?
+What about reduce ?
 
-Reduce uses a function to agregate a collection into single value. (It happens to be called a Catamorphism.)
-Unfold does the oposite, it uses a function to expend a seed into a collection (a.k.a Anamorphism). A little bit like the iterate function except  that the unfold keep the sequence of seeds and the sequence of values separated.
-To understand, the function "g" used by unfold takes a seed and retuns a value and a new seed. The values end up forming the collection which is returned by unfold.
+Then you understand what unfold is if I tell you that unfold is the dual function of reduce.
 
-The "g" function happens to be a Monadic value of a State Monad. This is very convenient because State Monad can easily compose and manage state very elegantly. I a way I can unfold my monadic value to be expended into a sequence of States.
+Reduce uses a function to agregate a collection into single value. (It happens to be called a Catamorphism in accademic circles.)
+Reduce uses a function of 2 arguments and return one.
+Unfold does the oposite, it uses a function to expend a seed into a collection of values (a.k.a Anamorphism). A little bit like the iterate function, except that the unfold keeps the sequence of seeds and the sequence of values separated.
+To understand, the  "g" function (see here) used by unfold, takes a seed and retuns a value and a new seed. The values (not the seeds) ends up forming the collection which is returned by unfold.
+
+The "g" function happens to be a Monadic value of a State Monad. This is very convenient because State Monads can easily compose and manage state very elegantly. In a way I can unfold a monadic value (the step function of our game) and expended into a sequence of States.
 
 Side comment: Monads return monadic values. For example a sequence monad in Clojure is just and array. 
 
 The take away here is that I have found the use of the unfold function and State Monads to offer an elegant way to implement a purely functional state machine. It can also be viewed as a parser which starts with the initial board state and comsumes moves step by step to deliver an end game result. No atoms are used to achieve this.
 
+(5 mins : total time 15 min)
+
+
         </section>
 
-
-        <section data-markdown>
+        <section>
+         <section data-markdown>
           <script type="text/template">
 An Engine which Unfolds
 ------------------------
@@ -342,20 +383,58 @@ An Engine which Unfolds
 
 
 Note:
-Lets look briefly at some of code extracts from the Chess-Engine. 
-Essentialy, a game is a sequence of game states and a result as a final element. "game-seq" returns the corresponding lazy-sequence by calling unfold. Each step of the game are computed by the "g" function of the unfold which is the this (play-game-step) function (the monadic value in itself). This function is much longer and too ugly to display. it's the heard of the engine. Because it's monadic it can be composed and wrapped by this function (game-step-monad-wrap) to analyse the state and terminate the sequence under the appropriate condition. By the way this (domonad block) is a Monadic Comprehension. This is what is passed to the "game-seq" function.
+Lets look briefly at some of code extracts from the Chess-Engine to see how the unfold function is used to implement the chess game. 
+Essentialy, a game is a sequence of game states and a result as a final element. "game-seq" returns that sequence. Each step of the game are computed by the "g" function of the unfold which is this (play-game-step) function (the monadic value in itself). This function is in reality much longer and too ugly to display. it's the heard of the engine. Because it's monadic it can be composed and wrapped by this function (game-step-monad-wrap) to analyse the state and terminate the sequence under the appropriate condition. The composability also enables to break the step function into separate concerns. By the way this (domonad block) is a Monadic Comprehension. This is what is passed to the "game-seq" function.
 
 It's all good what is the avantage of using all these clever monads instead of a good old loop?
 
-Here my Chess-engine is very flexible. I can pass a slightly modified monadis-step to my game-seq to implement a replay rather than a play engine. All the sequencing logic remains the same. Only the step function changes. Also if I want to implement a different game like go or connect-foor, only the step function will have to be re-implemented.
+Here my Chess-engine is very flexible. I can pass a slightly modified monadic-step to my game-seq to implement a replay rather than a play engine. All the sequencing logic remains the same. Only the step function changes. Also if I want to implement a different game like go or connect-foor, only the step function will have to be re-implemented. Additional the fact that it is purely functional opens up the possiblity of many games to be played safely in parallel.
 
+  Troubleshooting and repeatability is another benefit. My game ends up being a long sequence. This means I can take the state at any point of the sequence to test the step function in case I'm tracking a bug deep inside the engine.
+
+
+(5 mins : total time 20 min)
 
          </script>
+         </section>
+         <section data-markdown>
+
+Game sequence
+-------------
+
+```clojure
+[state1 state2 ... state-n result]
+```
+
+         </section>
         </section>
 
+        <section>
+                  <img  border="0" src="img/Conclusion.jpg" alt="questions?">
+           <aside class="notes">
+            The conclusion is that this application contains a lot of moving parts and uses a variety of technologies.
+            Clojure gave me a few advantages to deliver a working solution:
+            Reduce complexity, increase my productivity so much that I was actually able to get this website running in 5 months just working in the evenings and making sufficient consistant progress to keep my motivation up. For example I would have lost the plot trying to acheive the same in Java in the same circumptances.
+            I was able to use the same language across the server and the browser using consistent libraries with high level of abstraction.
+            The Dynamic nature of Clojure and the availability of the Clojail sandbox provides a new way to design webapplications where 3rd parties can contribute in code.
+            This unique mix made this application possible.
 
+            
+
+            (2 mins : total time 22 mins )
+
+          </aside>
+        </section>
         <section>
                   <img  border="0" src="img/question.png" alt="questions?">
+           <aside class="notes">
+            Any question?
+
+            
+
+            (10 mins : total time 32 - 45 mins )
+
+          </aside>
         </section>
 
 
