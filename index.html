@@ -111,7 +111,7 @@ Its aim is to promote games like this one. Which I have called lambda chess.
           </aside>
         </section>
 
-        <section>
+        <section data-background="#007777" data-background-transition="slide">
         
           <h3>What might an API look like?</h3>
             <aside class="notes">
@@ -218,22 +218,24 @@ Possible implementation
                           {:move (get v move), :state nil})))
 ```
 Note:
-Here is a suggested implementation...
-It's my helloworld example, it returns a valid move. But that's just a very simple example.
+Here is an extremly simplified suggested implementation...
+It's my helloworld example, it returns an arbitrary valid move.
 The idea is I'm not writing the whole of the chess engine myself. Other people submit 
 their chess strategy implementation. My engine only ensures valid execution of the game.
 
-(40s : total time 4 min 10)
+The developer of this strategy will want to evaluate which move is the best probably using a MinMax/beta pruning algorithm. For the moment the author of the function will have to implement all this scafolding themselves inside their function as only anonymous functions are allowed and no external functions are available at this point. But I'm considering providing documented helper functions like list-of-valid-move, apply-move-to-board and basic MinMax in future in order to lower the level of entry to the platform.
+
+(1 min 30 : total time 5 min )
 
         </section>
 
-        <section>
+        <section  data-background="#007777" data-background-transition="slide">
         
           <h3>How is the website designed?</h3>
             <aside class="notes">
-            Let's now look at the design.
+            Let's now look at the design of the website.
 
-(10s : total time 4 min 20)
+(10s : total time 5 min 10)
 
           </aside>
         </section>
@@ -263,7 +265,7 @@ The website components are using the following libraries.
 (describ browser common and server)
 As you can see the chess-engine is an independent library. which is convenient if you either want to add another game or if you want to independently reuse the chess-engine to create another chess game. Chess-engine is just a pure chess api.
 
-(1 min : total time 5 min 20)
+(1 min : total time 6 min 10)
 
         </section>
 
@@ -273,7 +275,7 @@ As you can see the chess-engine is an independent library. which is convenient i
             <aside class="notes">
             This gives you an overview of the application. It's made of 3 components: WebServer running the Chess-Engine, browser running ClojureScript and the Database.
             There are various client server communication mechanisms like REST calls in red and WebSockets in green across the same page.
-            On the top of the main web page is the authentication provided by the Friends library using openId. This means, you don't need to create yet another account. You can use any of these providers to authenticate.
+            On the top of the main web page is the authentication provided by the Friends library using the openId protocol. This means, you don't need to create yet another account. You can use any of these providers to authenticate.
             Then the page contains two fields, one to give a unique name to your strategy and another to paste your function implementation.
             For the moment it must be an anonymous function as described earlier. Any sub-function must be inlined in a let block. The code is submitted via a rest call. It will be executed against all the other functions, already present on the server, to generate some stats (displayed at the bottom of the page).
             The execution is made on the server and is sandboxed with Clojail. This means, no thread creation, no def, no Java interops are allowed. Execution time of a user function is bounded so users cannot take the server down with an infinite loop.
@@ -281,7 +283,7 @@ As you can see the chess-engine is an independent library. which is convenient i
             The stats section, lists the ranking of the functions and list all the match's results.
             Clicking on a match result will take you to this replay page...
 
-            (5 mins : total time 10 mins)
+            (5 mins : total time 11 mins)
 
           </aside>        
         </section>
@@ -291,17 +293,17 @@ As you can see the chess-engine is an independent library. which is convenient i
           <aside class="notes">
             one rest call is used to retreive the list of moves of the game at the bottom of the page.  another rest call fetches the state of the board every time the prev or next button are pressed. the board is refreshed with Clidget which abstract the notion of graphic component in ClojureScript. It's true Ajax, there are no refresh of the page.
 
-            (1 mins : total time 11 min)
+            (1 mins : total time 12 min)
           </aside>
         </section>
 
-        <section>
+        <section data-background="#007777"  data-background-transition="slide">
 
           <h3>The Chess Engine Implementation</h3>
            <aside class="notes">
             Enough of the WebApplication. Let's dive into the Chess-engine implementation.
 
-            (15s : total time 11 min 15)
+            (15s : total time 12 min 15)
 
           </aside>
 
@@ -342,7 +344,7 @@ Side comment: Monads return monadic values. For example a sequence monad in Cloj
 
 The take away here is that I have found the use of the unfold function and State Monads to offer an elegant way to implement a purely functional state machine. It can also be viewed as a parser which starts with the initial board state and comsumes moves step by step to deliver an end game result. No atoms are used to achieve this.
 
-(5 mins : total time 15 min)
+(5 mins : total time 17 min)
 
 
         </section>
@@ -384,7 +386,7 @@ An Engine which Unfolds
 
 Note:
 Lets look briefly at some of code extracts from the Chess-Engine to see how the unfold function is used to implement the chess game. 
-Essentialy, a game is a sequence of game states and a result as a final element. "game-seq" returns that sequence. Each step of the game are computed by the "g" function of the unfold which is this (play-game-step) function (the monadic value in itself). This function is in reality much longer and too ugly to display. it's the heard of the engine. Because it's monadic it can be composed and wrapped by this function (game-step-monad-wrap) to analyse the state and terminate the sequence under the appropriate condition. The composability also enables to break the step function into separate concerns. By the way this (domonad block) is a Monadic Comprehension. This is what is passed to the "game-seq" function.
+Essentialy, a game is a sequence of game states followed by result as the final element. "game-seq" returns that as a lazy sequence. Each step of the game are computed by the "g" function of the unfold which is this (play-game-step) function (the monadic value in itself). This function is in reality much longer and too ugly to display. it's the heard of the engine. Because it's monadic it can be composed and wrapped by this function (game-step-monad-wrap) to analyse the state and terminate the sequence under the appropriate condition. The composability also enables to break the step function into separate concerns. By the way this (domonad block) is a Monadic Comprehension. This is what is passed to the "game-seq" function.
 
 It's all good what is the avantage of using all these clever monads instead of a good old loop?
 
@@ -393,7 +395,7 @@ Here my Chess-engine is very flexible. I can pass a slightly modified monadic-st
   Troubleshooting and repeatability is another benefit. My game ends up being a long sequence. This means I can take the state at any point of the sequence to test the step function in case I'm tracking a bug deep inside the engine.
 
 
-(5 mins : total time 20 min)
+(5 mins : total time 22 min)
 
          </script>
          </section>
@@ -414,14 +416,14 @@ Game sequence
            <aside class="notes">
             The conclusion is that this application contains a lot of moving parts and uses a variety of technologies.
             Clojure gave me a few advantages to deliver a working solution:
-            Reduce complexity, increase my productivity so much that I was actually able to get this website running in 5 months just working in the evenings and making sufficient consistant progress to keep my motivation up. For example I would have lost the plot trying to acheive the same in Java in the same circumptances.
+            Reduced complexity, increased my productivity so much that I was actually able to get this website running in 5 months just working in the evenings and making sufficient consistant progress to keep my motivation up. For example I would have lost the plot trying to acheive the same in Java in the same circumptances.
             I was able to use the same language across the server and the browser using consistent libraries with high level of abstraction.
             The Dynamic nature of Clojure and the availability of the Clojail sandbox provides a new way to design webapplications where 3rd parties can contribute in code.
             This unique mix made this application possible.
 
             
 
-            (2 mins : total time 22 mins )
+            (2 mins : total time 24 mins )
 
           </aside>
         </section>
@@ -432,7 +434,7 @@ Game sequence
 
             
 
-            (10 mins : total time 32 - 45 mins )
+            (10 mins : total time 34 - 45 mins )
 
           </aside>
         </section>
