@@ -62,7 +62,7 @@
 
         <section data-markdown>
 
-What is it for?
+1. What is it for?
 -----------------
 
 ![d](img/board.png)
@@ -110,13 +110,35 @@ Its aim is to promote games like this one. Which I have called lambda chess.
             (time 40s : total time 1 min 30)
           </aside>
         </section>
+        <section id="Agenda">
+
+ 
+
+          <h3>Agenda</h3>
+ 
+            <ol>
+              <li class="fragment">Lambda Zone - What is it?</li>
+              <li class="fragment">What might an API look like?</li>
+              <li class="fragment">How is the website designed?</li>
+              <li class="fragment">Chess Engine Implementation</li>
+            </ol>
+
+          <aside class="notes">
+          These are the themes I want to cover with you today. We have just gone through "what is it?" in the introduction.
+          Next I would like to explore what a valid API to meet this goal could look like.
+          Then I would like to share with you the goals I initially had (when the idea of the website first came to me) and how they drove the design choices for the platform.
+          Towards the end we will dive down and explore the motivations that were behind the current Chess Engine implementation.
+          </aside>
+
+        </section>
+
 
         <section data-background="#007777" data-background-transition="slide">
         
-          <h3>What might an API look like?</h3>
+          <h3>2. What might an API look like?</h3>
             <aside class="notes">
             I have only implemented the Chess Game at the moment so it might be a bit specific.
-            But can you think of what would this strategy function look like?
+            But can you think of what this strategy function might look like?
 
             (time 30s : total time 2 mins)
  
@@ -143,6 +165,8 @@ a list of valid-moves.
 The color of your team.
 The History of all moves.
 even flag to tell you when you re in-check.
+My initial cut of the API had all the information a strategy engine might want. Then I turned it into a map to make these parameters optional and extensible.
+(It's data driven api.)
 
             (1 min : total time 3 mins )
 
@@ -231,14 +255,42 @@ The developer of this strategy will want to evaluate which move is the best prob
 
         <section  data-background="#007777" data-background-transition="slide">
         
-          <h3>How is the website designed?</h3>
+          <h3>3. How is the website designed?</h3>
             <aside class="notes">
-            Let's now look at the design of the website.
+            Lets now look at the design of the website.
 
 (10s : total time 5 min 10)
 
-          </aside>
+          </aside>          
         </section>
+
+        <section id="designObjectives">
+
+ 
+
+          <h3>Design Objectives</h3>
+ 
+            <ul>
+              <li class="fragment">submit a strategy function</li>
+              <li class="fragment">authentication</li>
+              <li class="fragment">strategy ranking</li>
+              <li class="fragment">replay</li>
+              <li class="fragment">human play</li>
+            </ul>
+
+          <aside class="notes">
+            When I designed this website I wanted to have:
+            an area for a user to submit a strategy function
+            an authentication method to remember the platform user
+            stats to be publicly visible
+            replay area
+            human play area
+          </aside>
+
+        </section>
+
+
+
 
         <section data-markdown>
 Application Stack
@@ -299,7 +351,7 @@ As you can see the chess-engine is an independent library. which is convenient i
 
         <section data-background="#007777"  data-background-transition="slide">
 
-          <h3>The Chess Engine Implementation</h3>
+          <h3>4. The Chess Engine Implementation</h3>
            <aside class="notes">
             Enough of the WebApplication. Let's dive into the Chess-engine implementation.
 
