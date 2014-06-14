@@ -63,7 +63,7 @@
 
 			My name is MG. (p) I worn many hats. (p) Currently I have the sexiest job in the world: DEvOPs in an Investment bank.
 
-            (total time 20s)
+            (total time 1 min)
 
           </aside>
         </section>
@@ -73,16 +73,18 @@
             <ol>
               <li class="fragment">Traditional troubleshooting of a Java application</li>
               <li class="fragment">What is JVM-breakglass?</li>
+              <li class="fragment">How does JVM-breakglass work?</li>
               <li class="fragment">How to integrate it in an application?</li>
               <li class="fragment">Live Debugging demo</li>
             </ol>
           <aside class="notes">
           	During this presentation we will see how Java apps are troubleshooted traditionally.
           	What breakglass provides.
+          	How it works.
           	How easy it is to use this tool.
           	Finally we will run a live debugging demo.
 
-          (time x: total time x mins)
+          (time 15: total time < 2 mins)
           </aside>
 
         </section>
@@ -104,13 +106,13 @@
           How many people in the room use Java day to day?
           What do you normally do to track a bug? (pause)
 Most of you must have used the debugger or print statements which are well established ways of tracking bugs in many languages (inc java).
-The debugger is mostly useful when the bug can be reproduced on a development machine and can be narrowed down to a series or breakpoints. Debuggers have to stop the world which changes the nature of the problem your trying to study.
+The debugger is mostly useful when the bug can be reproduced on a development machine and can be narrowed down to a series of breakpoints. Debuggers have to stop the world which can change the nature of the problem your trying to study.
 Log/print statements can be very powerful but  need to be planned before compilation, add clutter to the code and can slow down the application.
-Same with JMX or interactive mechanism,very good to retreive or send selected information to your remote objects. Good to deal with a dynamic and complex problem. However needs a good deal of scaffolding and design needs to be applied to provide a powerful investigation tool.
+Some of you might have used JMX or implemented an interactive mechanism (say via rest calls),very good to retreive or send selected information to your remote objects. Good to deal with a dynamic and complex problem. However needs a good deal of scaffolding and design needs to be applied to provide a powerful investigation tool.
 
 
 
-          (time x : total time x mins)
+          (time 1min 30 sec : total time 3 mins)
           </aside>
 
         </section>
@@ -134,14 +136,20 @@ Same with JMX or interactive mechanism,very good to retreive or send selected in
 In this crowd, we're probably all used to the fact that most function languages are equipped with a REPL which enable to poke around a live process to figure out what's going on?
 Why can't we leverage this concept with any JVM application? (pause)
 Java developers are used to the "write the code", compile, package and deploy cycle.
-Why can't we prompt the process to display the content of an object, call methods, create objects at runtime without having to plan for it in advance?
-With this tool you can do that and more... without having to specifically use Clojure in your project.          
+Why can't we prompt the process to display the content of an object, call methods, create objects at runtime without having to plan for it in advance or go through the same slow dev cycle everytime to run a small experiment?
+With this tool you can do that and more... like creating new objects and monitor object state without having to specifically use Clojure in your project.          
 
           (time x : total time x mins)
           </aside>
 
         </section>
-
+        <section>
+          <h3>How does it work?</h3>
+          <img BORDER="0" src="img/jvm-breakglass.png" alt="demo diagram">
+          <aside class="notes">
+          	This is your java application with it's data structures and processing classes. boundary of the jvm. JVM-breakglass with it's helper functions. JVM-breakglass starts an nRepl server listening on a port your choice. At any moment an nRepl client i.e. lein for example can connect onto it to inspect the JVM. 
+          </aside>
+        </section>
         <section data-markdown>
          <script type="text/template">
 How to add JVM-breakglass to your project
@@ -152,7 +160,7 @@ Maven:
 <dependency>
   <groupId>net.matlux</groupId>
   <artifactId>jvm-breakglass</artifactId>
-  <version>0.0.5</version>
+  <version>0.0.6</version>
 </dependency>
 ```
 
@@ -181,7 +189,7 @@ import net.matlux.NreplServer;
     .put("department",myObject);
 ```
 Note:
-Then in Spring add this bean. In case of a pure java application just call this constructor to start up the server.
+You'll need some entry point to start the server. In Spring done via this bean declaraion. In case of a pure java application just call this constructor to start up the server.
 
 			</script>
         </section>
@@ -199,17 +207,96 @@ lein repl :connect localhost:1112
 Note:
 Once the JVM-breakglass component is installed and running. You can use this lein command to remotely connect onto the server.
 
-(time: 1min ; total 8 mins)
+(time: 1min ; total 10 mins)
 			</script>
         </section>
 
         <section>
 
           <img BORDER="0" src="img/demo.png" alt="demo">
+          <a href="http://localhost:8080/SpringMVC/city">http://localhost:8080/SpringMVC/city</a>
           <aside class="notes">
           	A presentation wouldn't be complete without a demo.
           	To demonstrate the power of this tools, I thought it would be appropriate to use a web based Enterprise Application example written in Java/SpringMVC. Everyone knows that Enterprise applications are of a higher design quality but also notoriously difficult to work with. That's why I choose to use one of them for this demo.
+          	(time 15 mins; total < 27 mins)
           </aside>
+        </section>
+        <section>
+          <h3>Enterprise Application Diagram</h3>
+          <img BORDER="0" src="img/springmvc-diagram.png" alt="demo diagram">
+          <aside class="notes">
+          	The diagrams shows the design of the demo application. (pause) It's a JVM process, running a Spring MVC webapp serving this url.
+          	The url is bound to this Report generation controller which pulls it's data from this Employee/department DataStructure. 
+          	Here you can see the jvm-break glass component is launched as part of the same JVM process.
+          </aside>
+        </section>
+
+        <section data-markdown>
+
+<script type="text/template">
+Data Structure
+-----------------------
+                
+```xml
+       <bean id="address1"
+              class="net.matlux.testobjects.Address">
+              <constructor-arg index="0" value="1 Mayfair" />
+              <constructor-arg index="1" value="SW1" />
+              <constructor-arg index="2" value="London" />
+       </bean>
+       <bean id="address2"
+              class="net.matlux.testobjects.Address">
+              <constructor-arg index="0" value="1 Madison Square" />
+              <constructor-arg index="1" value="SW2" />
+              <constructor-arg index="2" value="NY" />
+       </bean>
+       <bean id="address3"
+              class="net.matlux.testobjects.Address">
+              <constructor-arg index="0" value="1 Croxley park" />
+              <constructor-arg index="1" value="WT1" />
+              <constructor-arg index="2" value="Watford" />
+       </bean>
+       <bean id="employee1"
+              class="net.matlux.testobjects.Employee">
+              <constructor-arg index="0" value="Bob" />
+              <constructor-arg index="1" value="Dilan" />
+              <constructor-arg index="2" ref="address1" />
+       </bean>
+       <bean id="employee2"
+              class="net.matlux.testobjects.Employee">
+              <constructor-arg index="0" value="Mick" />
+              <constructor-arg index="1" value="Jagger" />
+              <constructor-arg index="2" ref="address2" />
+       </bean>
+       <bean id="employee3"
+              class="net.matlux.testobjects.Employee">
+              <constructor-arg index="0" value="John" />
+              <constructor-arg index="1" value="Smith" />
+              <constructor-arg index="2" ref="address3" />
+       </bean>
+
+       <bean id="department"
+              class="net.matlux.testobjects.Department">
+              <constructor-arg index="0" value="The Art Department" />
+              <constructor-arg index="1" value="0" />
+              <property name="employees">
+                  <list>
+                      <ref bean="employee1" />
+                      <ref bean="employee2" />                
+                      <ref bean="employee3" />                
+                  </list>
+              </property>
+       </bean>
+```
+
+Note:
+          	Here you can see the Employee/Department data structure in more details. It's made of Spring beans definitions which end up creating Address, Employee and Department pojos.
+          	Notice here that two of our employees are based in NY and London.
+
+
+			</script>
+          
+
         </section>
 
         <section>
@@ -226,7 +313,7 @@ Once the JVM-breakglass component is installed and running. You can use this lei
             </ol>
           <aside class="notes">
 
-          (time x: total time x mins)
+          (time 1 min: total time 27 mins)
           </aside>
         </section>
 
