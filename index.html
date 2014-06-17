@@ -105,10 +105,10 @@
           <aside class="notes">
           How many people in the room use Java day to day?
           What do you normally do to track a bug? (pause)
-Most of you must have used the debugger or print statements which are well established ways of tracking bugs in many languages (inc java).
+Most of you must have used the debugger (click) or print statements (click) which are well established ways of tracking bugs in many languages (inc java).
 The debugger is mostly useful when the bug can be reproduced on a development machine and can be narrowed down to a series of breakpoints. Debuggers have to stop the world which can change the nature of the problem your trying to study.
 Log/print statements can be very powerful but  need to be planned before compilation, add clutter to the code and can slow down the application.
-Some of you might have used JMX or implemented an interactive mechanism (say via rest calls),very good to retreive or send selected information to your remote objects. Good to deal with a dynamic and complex problem. However needs a good deal of scaffolding and design needs to be applied to provide a powerful investigation tool.
+Some of you might have used JMX (click) or implemented an interactive mechanism (click) (say via rest calls),very good to retreive or send selected information to your remote objects. Good to deal with a dynamic and complex problem. However needs a good deal of scaffolding and design needs to be applied to provide a powerful investigation tool.
 
 
 
@@ -128,18 +128,17 @@ Some of you might have used JMX or implemented an interactive mechanism (say via
               <li class="fragment">Call arbitraty methods</li>
               <li class="fragment">Creation of new object instances</li>
               <li class="fragment">Monitor object state</li>
-              <li class="fragment">Overwrite class definition on the fly</li>
               <li class="fragment">No need to use Clojure to develop the application</li>
             </ol>
 
           <aside class="notes">
-In this crowd, we're probably all used to the fact that most function languages are equipped with a REPL which enable to poke around a live process to figure out what's going on?
+In this crowd, we're probably all used to the fact that most functional languages are equipped with a REPL which enable to poke around a live process to figure out what's going on?
 Why can't we leverage this concept with any JVM application? (pause)
 Java developers are used to the "write the code", compile, package and deploy cycle.
-Why can't we prompt the process to display the content of an object, call methods, create objects at runtime without having to plan for it in advance or go through the same slow dev cycle everytime to run a small experiment?
-With this tool you can do that and more... like creating new objects and monitor object state without having to specifically use Clojure in your project.          
+Why can't we prompt (click) the process to display the content of an object (click), call methods (click), create objects at runtime (click) without having to plan for it in advance or go through the same slow dev cycle everytime to run a small experiment?
+With this tool you can do that and more... like creating new objects (click) and monitor object state (click) without having to specifically use Clojure in your project.          
 
-          (time x : total time x mins)
+          (time 1 : total time 5 mins)
           </aside>
 
         </section>
@@ -147,7 +146,9 @@ With this tool you can do that and more... like creating new objects and monitor
           <h3>How does it work?</h3>
           <img BORDER="0" src="img/jvm-breakglass.png" alt="demo diagram">
           <aside class="notes">
+          	How does it work? (pause)
           	This is your java application with it's data structures and processing classes. boundary of the jvm. JVM-breakglass with it's helper functions. JVM-breakglass starts an nRepl server listening on a port your choice. At any moment an nRepl client i.e. lein for example can connect onto it to inspect the JVM. 
+          	(time 1 min ; total 6 mins)
           </aside>
         </section>
         <section data-markdown>
@@ -207,18 +208,17 @@ lein repl :connect localhost:1112
 Note:
 Once the JVM-breakglass component is installed and running. You can use this lein command to remotely connect onto the server.
 
-(time: 1min ; total 10 mins)
+(time: 1min ; total 8 mins)
 			</script>
         </section>
 
         <section>
-
+          <h3>Time for a...</h3>
           <img BORDER="0" src="img/demo.png" alt="demo">
-          <a href="http://localhost:8080/SpringMVC/city">http://localhost:8080/SpringMVC/city</a>
           <aside class="notes">
           	A presentation wouldn't be complete without a demo.
           	To demonstrate the power of this tools, I thought it would be appropriate to use a web based Enterprise Application example written in Java/SpringMVC. Everyone knows that Enterprise applications are of a higher design quality but also notoriously difficult to work with. That's why I choose to use one of them for this demo.
-          	(time 15 mins; total < 27 mins)
+          	(time 1 mins; total 9 mins)
           </aside>
         </section>
         <section>
@@ -228,6 +228,7 @@ Once the JVM-breakglass component is installed and running. You can use this lei
           	The diagrams shows the design of the demo application. (pause) It's a JVM process, running a Spring MVC webapp serving this url.
           	The url is bound to this Report generation controller which pulls it's data from this Employee/department DataStructure. 
           	Here you can see the jvm-break glass component is launched as part of the same JVM process.
+          	(time 1 min ; total 9 mins)
           </aside>
         </section>
 
@@ -293,11 +294,21 @@ Note:
           	Here you can see the Employee/Department data structure in more details. It's made of Spring beans definitions which end up creating Address, Employee and Department pojos.
           	Notice here that two of our employees are based in NY and London.
 
-
+          	(time 1 min ; total 10 mins)
 			</script>
           
 
         </section>
+        <section>
+
+          <img BORDER="0" src="img/demo.png" alt="demo">
+          <a href="http://localhost:8080/SpringMVC/city">http://localhost:8080/SpringMVC/city</a>
+          <aside class="notes">
+          	Let's start.
+          	(time 15 mins; total 25 mins)
+          </aside>
+        </section>
+
 
         <section>
           <h3>Let's take a step back</h3>
