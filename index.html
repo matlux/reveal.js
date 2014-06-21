@@ -55,14 +55,14 @@
           <aside class="notes">
           	(Ok, let's start)
             See this image?
-			Who recognises it? (pause)
+			Who recognises this sign? (pause)
 			Normally when you press on it it's because there is fire! (pause)
-			Here imagine the same but when you process is on fire. (pause)
+			Here imagine the same but when you JVM process is on fire. (pause)
 
-			Today I'm here to demonstrate how Clojure and REPL can be introduced as a powerful troubleshooting tool within a pure Java or JVM based Application, without having to introduce any Clojure code within your project. (pause)
-			I have used this tools many times on various Java project, it help me getting out of sticky situation very elegantly.
+			Today I'm here to demonstrate how jvm-breakglasss can be introduced as a powerful troubleshooting tool within a pure Java or JVM based Application. (pause)
+			I have used this tools in various Java projects and managed to trace stricky bugs with it before. This is a free library that I wrote and made available on Github. I want to share with you how troubleshooting your Java application can feel like magic.
 
-			My name is MG. (p) I worn many hats. (p) Currently I have the sexiest job in the world: DEvOPs in an Investment bank.
+			BTW, My name is MG. (p) I worn many hats. (p) Currently I have the sexiest job in the world: DEvOPs in an Investment bank.
 
             (total time 1 min)
 
@@ -72,11 +72,11 @@
         <section id="Agenda">
           <h3>Agenda</h3>
             <ol>
-              <li class="fragment">Traditional troubleshooting of a Java application</li>
-              <li class="fragment">What is JVM-breakglass?</li>
-              <li class="fragment">How does JVM-breakglass work?</li>
-              <li class="fragment">How to integrate it in an application?</li>
-              <li class="fragment">Live Debugging demo</li>
+              <li>Traditional troubleshooting of a Java application</li>
+              <li>What is JVM-breakglass?</li>
+              <li>How does JVM-breakglass work?</li>
+              <li>How to integrate it in an application?</li>
+              <li>Live Debugging demo</li>
             </ol>
           <aside class="notes">
           	During this presentation we will see how Java apps are troubleshooted traditionally. (click)
@@ -97,48 +97,68 @@
           <h3>Troubleshooting a Java application</h3>
  
             <ol>
-              <li class="fragment">Debugger</li>
-              <li class="fragment">Log/print statements</li>
-              <li class="fragment">JMX</li>
-              <li class="fragment">Adhoc interactive mechanism</li>
+              <li>Debugger</li>
+              <li>Log/print statements</li>
+              <li>JMX</li>
+              <li>Adhoc interactive mechanism</li>
             </ol>
 
           <aside class="notes">
           How many people in the room use Java day to day?
-          What do you normally do to track a bug? (pause)
-Most of you must have used the debugger (click) or print statements (click) which are well established ways of tracking bugs in many languages (inc java).
-The debugger is mostly useful when the bug can be reproduced on a development machine and can be narrowed down to a series of breakpoints. Debuggers have to stop the world which can change the nature of the problem your trying to study.
-Log/print statements can be very powerful but  need to be planned before compilation, add clutter to the code and can slow down the application.
-Some of you might have used JMX (click) or implemented an interactive mechanism (click) (say via rest calls),very good to retreive or send selected information to your remote objects. Good to deal with a dynamic and complex problem. However they need a good deal of scaffolding to be turned into a powerful investigation tool.
+          You might recognise some of the debugging strategies that I have listed here. (pause)
+          Just quick comment regarding their limitations: 
+To use the debugger you generally need to have a development environment and be able to narrowed the problem down to a series of breakpoints. If you're investigating a race condition the Debugger can change the nature of the problem your trying to study.
+Log/print statements need to be planned before compilation, can slow down the application and can be hard to read.
+JMX or an implemented an interactive mechanism (say via rest calls), need to be designed into the application to be useful.
 
+We will see that JVM-breakglass does not suffer from the same limitations.
 
 
           (time 1min 30 sec : total time 3 mins)
           </aside>
 
         </section>
+
         <section>
 
  
 
-          <h3>What can JVM-breakglass provide?</h3>
+          <h3>What is JVM-breakglass?</h3>
  
             <ol>
-              <li class="fragment">Interactive prompt</li>
-              <li class="fragment">See inside private members</li>
-              <li class="fragment">Call arbitraty methods</li>
-              <li class="fragment">Creation of new object instances</li>
-              <li class="fragment">Creation of new classes</li>
-              <li class="fragment">Monitor object state</li>
-              <li class="fragment">No need to use Clojure to develop the application</li>
+              <li class="fragment">Open Source Maven Library</li>
+              <li class="fragment">Can be integrated on any JVM process</li>
+              <li class="fragment">Provides a debugging console onto a JVM process</li>
             </ol>
 
           <aside class="notes">
-In this crowd, we're probably all used to the fact that most functional languages are equipped with a REPL which enable to poke around a live process to figure out what's going on?
-Why can't we leverage this concept with any JVM application? (pause)
+          JVM-breakglass is a Java library (click), easy to integrate (click) which gives access to a REPL console (click) into a JVM process.
+
+          (time 1 : total time 5 mins)
+          </aside>
+
+        </section>
+
+        <section>
+
+ 
+
+          <h3>What are the main JVM-breakglass features?</h3>
+ 
+            <ol>
+              <li>Interactive prompt</li>
+              <li>See inside private members</li>
+              <li>Call arbitrary methods</li>
+              <li>Creation of new object instances</li>
+              <li>Creation of new classes</li>
+              <li>Monitor object state</li>
+              <li>No need to use Clojure to develop the application</li>
+            </ol>
+
+          <aside class="notes">
 Java developers are used to the "write the code", compile, package and deploy cycle.
-Why can't we prompt (click) the process to display the content of an object (click), call methods (click), create objects at runtime (click) without having to plan for it in advance or go through the same slow dev cycle everytime we run a small experiment?
-With this tool you can do that and more... like creating new Classes (click) and monitor object state (click) without having to specifically use Clojure in your project.          
+This library provides a console access onto your JVM process (), so you can display the content of any object (), call methods (), create objects at runtime () without having to plan for it in advance or go through the same slow dev cycle everytime we run a small experiment?
+We will see we even can create new Classes () and monitor object state () without having to specifically use Clojure in your project.          
 
           (time 1 : total time 5 mins)
           </aside>
@@ -149,7 +169,7 @@ With this tool you can do that and more... like creating new Classes (click) and
           <img BORDER="0" src="img/jvm-breakglass.png" alt="demo diagram">
           <aside class="notes">
           	How does it work? (pause)
-          	This is your java application with it's data structures and processing classes. boundary of the jvm. JVM-breakglass with it's helper functions. JVM-breakglass starts an nRepl server listening on a port your choice. At any moment an nRepl client i.e. lein for example can connect onto it to inspect the JVM. 
+          	This is your java application with it's data structures and processing classes. JVM-breakglass starts an nRepl server listening on a port your choice. At any moment an nRepl client i.e. lein for example can connect onto it to inspect the JVM. 
           	(time 1 min ; total 6 mins)
           </aside>
         </section>
@@ -168,7 +188,7 @@ Maven:
 ```
 
 Note:
-To use JVM-breakglass, add the following dependency to your project.
+To use JVM-breakglass, add the following dependency to your project. You might wonder why this is a Maven coordinate. Remember this tool is mainly targeted at Java applications.
 
          </script>
         </section>
@@ -250,31 +270,31 @@ Data Structure
        <bean id="address2"
               class="net.matlux.testobjects.Address">
               <constructor-arg index="0" value="1 Madison Square" />
-              <constructor-arg index="1" value="SW2" />
+              <constructor-arg index="1" value="10026" />
               <constructor-arg index="2" value="NY" />
        </bean>
        <bean id="address3"
               class="net.matlux.testobjects.Address">
-              <constructor-arg index="0" value="1 Croxley park" />
-              <constructor-arg index="1" value="WT1" />
-              <constructor-arg index="2" value="Watford" />
+              <constructor-arg index="0" value="303 S Roxboro St., Suite 20" />
+              <constructor-arg index="1" value="27701" />
+              <constructor-arg index="2" value="Durham" />
        </bean>
        <bean id="employee1"
               class="net.matlux.testobjects.Employee">
-              <constructor-arg index="0" value="Bob" />
-              <constructor-arg index="1" value="Dilan" />
+              <constructor-arg index="0" value="Mick" />
+              <constructor-arg index="1" value="Jagger" />
               <constructor-arg index="2" ref="address1" />
        </bean>
        <bean id="employee2"
               class="net.matlux.testobjects.Employee">
-              <constructor-arg index="0" value="Mick" />
-              <constructor-arg index="1" value="Jagger" />
+              <constructor-arg index="0" value="Tom" />
+              <constructor-arg index="1" value="Cruise" />
               <constructor-arg index="2" ref="address2" />
        </bean>
        <bean id="employee3"
               class="net.matlux.testobjects.Employee">
-              <constructor-arg index="0" value="John" />
-              <constructor-arg index="1" value="Smith" />
+              <constructor-arg index="0" value="Rich" />
+              <constructor-arg index="1" value="Hickey" />
               <constructor-arg index="2" ref="address3" />
        </bean>
 
