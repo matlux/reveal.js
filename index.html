@@ -52,6 +52,9 @@
           </p>
           Author:
           Mathieu Gauthron
+
+          <a href="http://slides-euroclojure2014.matlux.net/">http://slides-euroclojure2014.matlux.net/</a>
+          
           <aside class="notes">
           	(Ok, let's start)
             See this image?
@@ -60,7 +63,7 @@
 			Here imagine the same but when you JVM process is on fire. (pause)
 
 			Today I'm here to demonstrate how jvm-breakglass can be introduced as a powerful troubleshooting tool within a pure Java or JVM based Application. (pause)
-			I have used this tools in various Java projects and managed to trace stricky bugs with it before. This is a free library that I wrote and made available on Github. I want to share with you how using this tool can make troubleshooting your Java application feel like magic.
+			I have used this tools in various Java projects before and gave the audience the impression that finding root cause was like magic.
 
 			BTW, My name is MG. (p) I worn many hats. (p) Currently I have the sexiest job in the world: DEvOPs in an Investment bank.
 
@@ -157,8 +160,7 @@ We will see that JVM-breakglass does not suffer from the same limitations.
 
           <aside class="notes">
 Java developers are used to the "write the code", compile, package and deploy cycle.
-This library provides a console access onto your JVM process (), so you can display the content of any object (), call methods (), create objects at runtime () without having to plan for it in advance or go through the same slow dev cycle everytime we run a small experiment?
-We will see we even can create new Classes () and monitor object state () without having to specifically use Clojure in your project.          
+This library provides a console access onto your JVM process (), so you can display the content of any object (), call methods (), create objects at runtime () without having to plan for it in advance or go through the same slow dev cycle everytime we run a small experiment?        
 
           (time 1 : total time 5 mins)
           </aside>
@@ -335,17 +337,17 @@ Note:
         <section>
           <h3>Let's take a step back</h3>
             <ol>
-              <li class="fragment">Interactive prompt</li>
-              <li class="fragment">Full JVM introspection</li>
-              <li class="fragment">Access private/public members, methods, fields...</li>
-              <li class="fragment">Call arbitrary methods</li>
-              <li class="fragment">Monitor object state</li>
-              <li class="fragment">Creation of new object instances</li>
-              <li class="fragment">Overwrite class definition on the fly</li>
-              <li class="fragment">No Clojure inside the Java project</li>
+              <li>Interactive prompt</li>
+              <li>Full JVM introspection</li>
+              <li>Access private/public members, methods, fields...</li>
+              <li>Call arbitrary methods</li>
+              <li>Monitor object state</li>
+              <li>Creation of new object instances</li>
+              <li>Overwrite class definition on the fly</li>
+              <li>No Clojure inside the Java project</li>
             </ol>
           <aside class="notes">
-
+            These are the things we've acheived with this tool. Do you have any question? (click)
           (time 1 min: total time 27 mins)
           </aside>
         </section>
