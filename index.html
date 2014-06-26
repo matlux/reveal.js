@@ -63,7 +63,7 @@
 			Normally when you press on it it's because there is fire! (pause)
 			Here imagine the same but when you JVM process is on fire. (pause) When it happens you might want to use this freely available tool to track down the issue that is causing it. (pause)
 
-      I have developed and used this tools successfully on many projects before.
+      I have developed and used this tool successfully on many projects before.
 			Today I'm here to demonstrate how JVM-breakglass can be used to debug a pure Java Application with (what some Java developers might see as) a bit of magic. (pause)
 
 			BTW, My name is MG. (p) I worn many hats. (p) Currently I have the sexiest job in the world: DEvOPs in an Investment bank.
@@ -161,7 +161,7 @@ We will see that JVM-breakglass does not suffer from the same limitations.
 
           <aside class="notes">
 Java developers are used to the "write the code", compile, package, test and deploy cycle.
-This library provides a console access onto your JVM process (), so you can display the content of any object (), call methods (), create objects at runtime () without having to plan for it in advance or go through the same slow dev cycle everytime we run a small experiment?        
+This library provides a console access onto your JVM process (), so you can display the content of any object (), call methods (), create objects at runtime () without having to plan for it in advance or go through the same slow dev cycle everytime you run a small experiment?        
 
           (time 1 : total time 5 mins)
           </aside>
@@ -191,7 +191,7 @@ Maven:
 ```
 
 Note:
-To use JVM-breakglass, add the following dependency to your project. You might wonder why this is a Maven coordinate. Remember this tool is mainly targeted at Java applications.
+(pause) To use JVM-breakglass, add the following dependency to your project. You might wonder why this is a Maven coordinate. Remember this tool is mainly targeted at Java applications.
 
          </script>
         </section>
@@ -215,7 +215,7 @@ import net.matlux.NreplServer;
     .put("department",myObject);
 ```
 Note:
-You'll need some entry point to start the server. In Spring done via this bean declaraion. In case of a pure java application just call this constructor to start up the server.
+You'll need some entry point to start the server. In Spring done via this bean declaration. In case of a pure java application just call this constructor to start up the server. (pause)
 
 			</script>
         </section>
@@ -252,7 +252,7 @@ Once the JVM-breakglass component is installed and running. You can use this lei
           <aside class="notes">
           	The diagram shows the design of the demo application. (pause) It's a JVM process, running a Spring MVC webapp serving this url.
           	The url is bound to this Report generation controller which pulls it's data from this Employee/department DataStructure. 
-          	Here you can see the jvm-break glass component is launched as part of the same JVM process.
+          	(Here you can see the jvm-break glass component is launched as part of the same webapp).
           	(time 1 min ; total 9 mins)
           </aside>
         </section>
@@ -316,7 +316,7 @@ Data Structure
 ```
 
 Note:
-          	Here you can see the Employee/Department data structure in more details. It's made of Spring beans definitions which end up creating Address, Employee and Department pojos.
+          	This shows the Employee/Department data structure in more details. It's made of Spring beans definitions which creates the Address, Employee and Department pojos.
           	Notice here that one of our employees is based in London. His name is Mick Jagger.
 
           	(time 1 min ; total 10 mins)
@@ -348,7 +348,11 @@ Note:
               <li>No Clojure inside the Java project</li>
             </ol>
           <aside class="notes">
-            These are the things we've acheived with this tool. Do you have any question? (click)
+            Let's take a step back. What have we seen here?
+            people might take this for granted.
+            but remember what this is like for a Java programmer. working with jmx beans and log files; having a locked down production system; and being asked to come up with an analysis of why your application in production is down.
+            For someone in this situation, this just looks like magic. That's something really important to appreciate.
+            When I first started with Clojure I was amazed.
           (time 1 min: total time 27 mins)
           </aside>
         </section>
